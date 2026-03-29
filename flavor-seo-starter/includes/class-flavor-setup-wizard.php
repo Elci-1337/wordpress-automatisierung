@@ -38,6 +38,58 @@ class Flavor_Setup_Wizard {
             <form id="flavor-setup-form" class="flavor-form">
                 <?php wp_nonce_field( 'flavor_seo_nonce', 'flavor_nonce' ); ?>
 
+                <!-- Step 0: KI-Konfiguration -->
+                <div class="flavor-card flavor-ai-card" id="step-ai">
+                    <h2><?php esc_html_e( '0. KI-Assistent (optional)', 'flavor-seo-starter' ); ?></h2>
+                    <p class="flavor-card-description"><?php esc_html_e( 'Verbinde eine KI-API, um Inhalte wie Tagline, Autoren-Bio und mehr automatisch generieren zu lassen.', 'flavor-seo-starter' ); ?></p>
+
+                    <div class="flavor-field">
+                        <label for="ai_provider"><?php esc_html_e( 'KI-Anbieter', 'flavor-seo-starter' ); ?></label>
+                        <select id="ai_provider" name="ai_provider">
+                            <option value="openai">OpenAI (GPT-4o-mini, GPT-4o)</option>
+                            <option value="anthropic">Anthropic (Claude) via OpenAI-kompatiblen Proxy</option>
+                            <option value="local">Lokales LLM (Ollama, LocalAI, LM Studio)</option>
+                            <option value="custom">Eigener Endpoint</option>
+                        </select>
+                    </div>
+
+                    <div class="flavor-field">
+                        <label for="ai_api_key"><?php esc_html_e( 'API-Key', 'flavor-seo-starter' ); ?></label>
+                        <div class="flavor-input-with-toggle">
+                            <input type="password" id="ai_api_key" name="ai_api_key"
+                                   value="<?php echo esc_attr( get_option( 'flavor_ai_api_key', '' ) ); ?>"
+                                   placeholder="sk-...">
+                            <button type="button" class="flavor-toggle-visibility" data-target="ai_api_key" title="Anzeigen/Verbergen">
+                                <span class="dashicons dashicons-visibility"></span>
+                            </button>
+                        </div>
+                        <p class="description"><?php esc_html_e( 'Wird sicher in der Datenbank gespeichert. Bei lokalen LLMs ggf. nicht nötig.', 'flavor-seo-starter' ); ?></p>
+                    </div>
+
+                    <div class="flavor-field-row">
+                        <div class="flavor-field">
+                            <label for="ai_api_url"><?php esc_html_e( 'API-Endpoint', 'flavor-seo-starter' ); ?></label>
+                            <input type="url" id="ai_api_url" name="ai_api_url"
+                                   value="<?php echo esc_attr( get_option( 'flavor_ai_api_url', 'https://api.openai.com/v1/chat/completions' ) ); ?>"
+                                   placeholder="https://api.openai.com/v1/chat/completions">
+                        </div>
+                        <div class="flavor-field">
+                            <label for="ai_model"><?php esc_html_e( 'Modell', 'flavor-seo-starter' ); ?></label>
+                            <input type="text" id="ai_model" name="ai_model"
+                                   value="<?php echo esc_attr( get_option( 'flavor_ai_model', 'gpt-4o-mini' ) ); ?>"
+                                   placeholder="gpt-4o-mini">
+                        </div>
+                    </div>
+
+                    <div class="flavor-ai-status" id="ai-status">
+                        <button type="button" class="button flavor-ai-test-btn" id="ai-test-connection">
+                            <span class="dashicons dashicons-plugins-checked"></span>
+                            <?php esc_html_e( 'Verbindung testen', 'flavor-seo-starter' ); ?>
+                        </button>
+                        <span id="ai-status-text"></span>
+                    </div>
+                </div>
+
                 <!-- Step 1: Basis-Informationen -->
                 <div class="flavor-card" id="step-basis">
                     <h2><?php esc_html_e( '1. Basis-Informationen', 'flavor-seo-starter' ); ?></h2>
@@ -50,11 +102,16 @@ class Flavor_Setup_Wizard {
                         <p class="description"><?php esc_html_e( 'Der Name deines Blogs/Magazins – wird überall verwendet.', 'flavor-seo-starter' ); ?></p>
                     </div>
 
-                    <div class="flavor-field">
+                    <div class="flavor-field flavor-ai-field">
                         <label for="blog_tagline"><?php esc_html_e( 'Tagline / Untertitel', 'flavor-seo-starter' ); ?></label>
-                        <input type="text" id="blog_tagline" name="blog_tagline"
-                               value="<?php echo esc_attr( $config['blog_tagline'] ?? '' ); ?>"
-                               placeholder="z.B. Dein Magazin für Technologie & Innovation">
+                        <div class="flavor-input-with-ai">
+                            <input type="text" id="blog_tagline" name="blog_tagline"
+                                   value="<?php echo esc_attr( $config['blog_tagline'] ?? '' ); ?>"
+                                   placeholder="z.B. Dein Magazin für Technologie & Innovation">
+                            <button type="button" class="flavor-ai-btn" data-field="blog_tagline" title="Mit KI generieren">
+                                <span class="flavor-ai-icon">&#9733;</span> KI
+                            </button>
+                        </div>
                     </div>
 
                     <div class="flavor-field">
@@ -94,11 +151,16 @@ class Flavor_Setup_Wizard {
                     <h2><?php esc_html_e( '2. Betreiber & E-E-A-T Informationen', 'flavor-seo-starter' ); ?></h2>
 
                     <div class="flavor-field-row">
-                        <div class="flavor-field">
+                        <div class="flavor-field flavor-ai-field">
                             <label for="owner_name"><?php esc_html_e( 'Betreiber / Firmenname', 'flavor-seo-starter' ); ?> *</label>
-                            <input type="text" id="owner_name" name="owner_name"
-                                   value="<?php echo esc_attr( $config['owner_name'] ?? '' ); ?>"
-                                   placeholder="z.B. Max Mustermann GmbH" required>
+                            <div class="flavor-input-with-ai">
+                                <input type="text" id="owner_name" name="owner_name"
+                                       value="<?php echo esc_attr( $config['owner_name'] ?? '' ); ?>"
+                                       placeholder="z.B. Max Mustermann GmbH" required>
+                                <button type="button" class="flavor-ai-btn" data-field="owner_name" title="Mit KI generieren">
+                                    <span class="flavor-ai-icon">&#9733;</span> KI
+                                </button>
+                            </div>
                         </div>
                         <div class="flavor-field">
                             <label for="owner_email"><?php esc_html_e( 'E-Mail', 'flavor-seo-starter' ); ?> *</label>
@@ -138,24 +200,39 @@ class Flavor_Setup_Wizard {
                         </div>
                     </div>
 
-                    <div class="flavor-field">
+                    <div class="flavor-field flavor-ai-field">
                         <label for="author_name"><?php esc_html_e( 'Hauptautor / Chefredakteur', 'flavor-seo-starter' ); ?></label>
-                        <input type="text" id="author_name" name="author_name"
-                               value="<?php echo esc_attr( $config['author_name'] ?? '' ); ?>"
-                               placeholder="z.B. Dr. Anna Schmidt">
+                        <div class="flavor-input-with-ai">
+                            <input type="text" id="author_name" name="author_name"
+                                   value="<?php echo esc_attr( $config['author_name'] ?? '' ); ?>"
+                                   placeholder="z.B. Dr. Anna Schmidt">
+                            <button type="button" class="flavor-ai-btn" data-field="author_name" title="Mit KI generieren">
+                                <span class="flavor-ai-icon">&#9733;</span> KI
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="flavor-field">
+                    <div class="flavor-field flavor-ai-field">
                         <label for="author_bio"><?php esc_html_e( 'Kurz-Bio des Hauptautors', 'flavor-seo-starter' ); ?></label>
-                        <textarea id="author_bio" name="author_bio" rows="3"
-                                  placeholder="z.B. Expertin für digitale Trends mit über 10 Jahren Erfahrung..."><?php echo esc_textarea( $config['author_bio'] ?? '' ); ?></textarea>
+                        <div class="flavor-input-with-ai">
+                            <textarea id="author_bio" name="author_bio" rows="3"
+                                      placeholder="z.B. Expertin für digitale Trends mit über 10 Jahren Erfahrung..."><?php echo esc_textarea( $config['author_bio'] ?? '' ); ?></textarea>
+                            <button type="button" class="flavor-ai-btn" data-field="author_bio" title="Mit KI generieren">
+                                <span class="flavor-ai-icon">&#9733;</span> KI
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="flavor-field">
+                    <div class="flavor-field flavor-ai-field">
                         <label for="author_expertise"><?php esc_html_e( 'Expertise / Qualifikationen', 'flavor-seo-starter' ); ?></label>
-                        <input type="text" id="author_expertise" name="author_expertise"
-                               value="<?php echo esc_attr( $config['author_expertise'] ?? '' ); ?>"
-                               placeholder="z.B. M.Sc. Informatik, Google-zertifiziert, 15 Jahre Branchenerfahrung">
+                        <div class="flavor-input-with-ai">
+                            <input type="text" id="author_expertise" name="author_expertise"
+                                   value="<?php echo esc_attr( $config['author_expertise'] ?? '' ); ?>"
+                                   placeholder="z.B. M.Sc. Informatik, Google-zertifiziert, 15 Jahre Branchenerfahrung">
+                            <button type="button" class="flavor-ai-btn" data-field="author_expertise" title="Mit KI generieren">
+                                <span class="flavor-ai-icon">&#9733;</span> KI
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -163,10 +240,15 @@ class Flavor_Setup_Wizard {
                 <div class="flavor-card" id="step-custom">
                     <h2><?php esc_html_e( '3. Individuelle Vorgaben', 'flavor-seo-starter' ); ?></h2>
 
-                    <div class="flavor-field">
+                    <div class="flavor-field flavor-ai-field">
                         <label for="custom_instructions"><?php esc_html_e( 'Freie Vorgaben & Wünsche', 'flavor-seo-starter' ); ?></label>
-                        <textarea id="custom_instructions" name="custom_instructions" rows="5"
-                                  placeholder="z.B. Farben: Dunkelblau + Gold, Zielgruppe: 25-45 jährige Professionals, Fokus auf Nachhaltigkeit..."><?php echo esc_textarea( $config['custom_instructions'] ?? '' ); ?></textarea>
+                        <div class="flavor-input-with-ai">
+                            <textarea id="custom_instructions" name="custom_instructions" rows="5"
+                                      placeholder="z.B. Farben: Dunkelblau + Gold, Zielgruppe: 25-45 jährige Professionals, Fokus auf Nachhaltigkeit..."><?php echo esc_textarea( $config['custom_instructions'] ?? '' ); ?></textarea>
+                            <button type="button" class="flavor-ai-btn" data-field="custom_instructions" title="KI-Vorschläge generieren">
+                                <span class="flavor-ai-icon">&#9733;</span> KI
+                            </button>
+                        </div>
                         <p class="description"><?php esc_html_e( 'Alles was du sonst noch angeben möchtest – Farben, Stil, Zielgruppe, besondere Wünsche.', 'flavor-seo-starter' ); ?></p>
                     </div>
 
@@ -193,6 +275,24 @@ class Flavor_Setup_Wizard {
                             <label><input type="checkbox" name="modules[]" value="categories" checked> Kategorien & Menüstruktur</label>
                             <label><input type="checkbox" name="modules[]" value="design" checked> Magazin-Design & Styling</label>
                         </div>
+                    </div>
+                </div>
+
+                <!-- AI Bulk Generate -->
+                <div class="flavor-card flavor-ai-bulk-card" id="step-ai-bulk">
+                    <div class="flavor-ai-bulk-inner">
+                        <div class="flavor-ai-bulk-text">
+                            <h3><?php esc_html_e( 'Alle leeren Felder per KI ausfüllen', 'flavor-seo-starter' ); ?></h3>
+                            <p><?php esc_html_e( 'Fülle zuerst Blog-Name und Thema aus, dann kann die KI den Rest vorschlagen.', 'flavor-seo-starter' ); ?></p>
+                        </div>
+                        <button type="button" class="button button-secondary flavor-ai-bulk-btn" id="flavor-ai-fill-all">
+                            <span class="flavor-ai-icon">&#9733;</span>
+                            <?php esc_html_e( 'Alle mit KI ausfüllen', 'flavor-seo-starter' ); ?>
+                        </button>
+                    </div>
+                    <div id="flavor-ai-bulk-progress" class="flavor-ai-bulk-progress" style="display:none;">
+                        <div class="flavor-progress-bar"><div class="flavor-progress-fill" id="ai-bulk-progress-fill"></div></div>
+                        <p id="ai-bulk-progress-text"></p>
                     </div>
                 </div>
 

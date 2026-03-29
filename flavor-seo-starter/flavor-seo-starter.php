@@ -24,6 +24,7 @@ define( 'FLAVOR_SEO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 // Autoload includes
 $includes = [
+    'includes/class-flavor-ai-generator.php',
     'includes/class-flavor-setup-wizard.php',
     'includes/class-flavor-seo-engine.php',
     'includes/class-flavor-llm-visibility.php',
@@ -62,7 +63,9 @@ final class Flavor_SEO_Starter {
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
         add_filter( 'plugin_action_links_' . FLAVOR_SEO_PLUGIN_BASENAME, [ $this, 'add_settings_link' ] );
 
-        // Initialize modules
+        // Initialize modules – AJAX handlers must be registered at boot time
+        new Flavor_Setup_Wizard();
+        new Flavor_AI_Generator();
         new Flavor_SEO_Engine();
         new Flavor_LLM_Visibility();
         new Flavor_GEO_Optimizer();
@@ -94,10 +97,11 @@ final class Flavor_SEO_Starter {
         if ( 'toplevel_page_flavor-seo-starter' !== $hook ) {
             return;
         }
+        wp_enqueue_style( 'dashicons' );
         wp_enqueue_style(
             'flavor-seo-admin',
             FLAVOR_SEO_PLUGIN_URL . 'admin/css/admin.css',
-            [],
+            [ 'dashicons' ],
             FLAVOR_SEO_VERSION
         );
         wp_enqueue_script(
