@@ -1,0 +1,243 @@
+/* Flavor SEO Starter – Admin Styles */
+
+.flavor-wrap {
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.flavor-header {
+    text-align: center;
+    padding: 30px 0 20px;
+}
+
+.flavor-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 8px;
+}
+
+.flavor-subtitle {
+    font-size: 1.05rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Cards */
+.flavor-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.flavor-card h2 {
+    font-size: 1.2rem;
+    color: #1e3a5f;
+    margin: 0 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+/* Fields */
+.flavor-field {
+    margin-bottom: 18px;
+}
+
+.flavor-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.flavor-field input[type="text"],
+.flavor-field input[type="email"],
+.flavor-field textarea,
+.flavor-field select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+
+.flavor-field input:focus,
+.flavor-field textarea:focus,
+.flavor-field select:focus {
+    border-color: #1e3a5f;
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+    outline: none;
+}
+
+.flavor-field input[type="color"] {
+    width: 60px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.flavor-field .description {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Field rows (2 columns) */
+.flavor-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .flavor-field-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Checkboxes */
+.flavor-checkboxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.flavor-checkboxes label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.flavor-checkboxes label:hover {
+    background: #f7f7f7;
+}
+
+.flavor-checkboxes input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #1e3a5f;
+}
+
+/* Submit */
+.flavor-submit-card {
+    text-align: center;
+    padding: 32px;
+}
+
+.flavor-submit-btn {
+    font-size: 1.1rem !important;
+    padding: 12px 48px !important;
+    background: #1e3a5f !important;
+    border-color: #1e3a5f !important;
+    border-radius: 8px !important;
+    transition: all 0.2s !important;
+}
+
+.flavor-submit-btn:hover {
+    background: #c9a227 !important;
+    border-color: #c9a227 !important;
+    transform: translateY(-1px);
+}
+
+.flavor-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Progress */
+.flavor-progress {
+    margin-bottom: 20px;
+}
+
+.flavor-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.flavor-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #1e3a5f, #c9a227);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+#flavor-progress-text {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+/* Result */
+.flavor-result {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.flavor-result.success {
+    padding: 20px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    color: #166534;
+}
+
+.flavor-result.error {
+    padding: 20px;
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: #991b1b;
+}
+
+.flavor-result h3 {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+}
+
+.flavor-result ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.flavor-result li {
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+/* Notice */
+.flavor-notice {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.flavor-notice-success {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+
+.flavor-notice p {
+    margin: 0;
+}
